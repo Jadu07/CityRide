@@ -1,20 +1,79 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default function App() {
+import Home from './screens/Home';
+import Search from './screens/Search';
+import RouteDetails from './screens/RouteDetails';
+import JourneyPlanner from './screens/JourneyPlanner';
+import Favorites from './screens/Favorites';
+import Recent from './screens/Recent';
+
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function SearchStack() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="SearchMain" component={Search} />
+      <Stack.Screen name="RouteDetails" component={RouteDetails} />
+      <Stack.Screen name="JourneyPlanner" component={JourneyPlanner} />
+    </Stack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: '#007AFF',
+        }}
+      >
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="home" size={size} color={color} />
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="Search"
+          component={SearchStack}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="search" size={size} color={color} />
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="Favorites"
+          component={Favorites}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="favorite" size={size} color={color} />
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="Recent"
+          component={Recent}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialIcons name="history" size={size} color={color} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
