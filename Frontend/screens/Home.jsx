@@ -7,13 +7,13 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
 } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBar from "../components/SearchBar";
 import RouteCard from "../components/RouteCard";
 import { searchRoutes } from "../services/api";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function Home({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -158,10 +158,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginLeft: 16,
     resizeMode: "cover",
-    
   },
 
-  /* Journey Button */
   journeyButton: {
     backgroundColor: "#90A17D",
     marginHorizontal: 20,

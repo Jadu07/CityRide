@@ -62,16 +62,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* Welcome screen first — NO TABS */}
         <Stack.Screen name="Welcome" component={Welcome} />
-
-        {/* Tabs come after welcome */}
         <Stack.Screen name="AppTabs" component={AppTabs} />
-
-        {/* Stack screens on top of tabs */}
         <Stack.Screen name="RouteDetails" component={RouteDetails} />
       </Stack.Navigator>
     </NavigationContainer>
-    </SafeAreaProvider>
   );
 }
