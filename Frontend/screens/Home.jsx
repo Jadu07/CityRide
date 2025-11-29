@@ -7,13 +7,12 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
-  ScrollView,
+  ScrollView
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBar from "../components/SearchBar";
 import RouteCard from "../components/RouteCard";
 import { searchRoutes } from "../services/api";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,6 +80,19 @@ export default function Home({ navigation }) {
       <Image source={require("../assets/explore2.png")} style={styles.sliderImage} />
       <Image source={require("../assets/explore3.png")} style={styles.sliderImage} />
     </ScrollView>
+  </View>
+
+   <Text style={styles.sectionHeading}>Popular Routes</Text>
+  <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
+    <TouchableOpacity style={styles.popularCard} onPress={() => navigation.navigate("RouteDetails", {})}>
+      <Text style={styles.popularText}>103 → Hinjawadi Phase 3</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.popularCard} onPress={() => navigation.navigate("RouteDetails", {})}>
+      <Text style={styles.popularText}>235 → Kharadi</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.popularCard} onPress={() => navigation.navigate("RouteDetails", {})}>
+      <Text style={styles.popularText}>2 → Shivajinagar</Text>
+    </TouchableOpacity>
   </View>
 
   <TouchableOpacity
@@ -159,9 +171,19 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     resizeMode: "cover",
   },
-
+  popularCard: {
+    backgroundColor: "#F4F6F0",
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 5,
+  },
+  popularText: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#2E2E2E",
+  },
   journeyButton: {
-    backgroundColor: "#90A17D",
+    backgroundColor: "#6d7762ff",
     marginHorizontal: 20,
     marginTop: 18,
     borderRadius: 14,

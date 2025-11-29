@@ -5,10 +5,11 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  FlatList,
   ActivityIndicator,
+  Image,
+  ScrollView,
 } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getJourney } from "../services/api";
 import { diffMinutesHHMMSS } from "../utils/timeUtils";
@@ -46,7 +47,7 @@ export default function JourneyPlanner() {
       <View style={styles.card}>
         <View style={styles.row}>
           <View style={styles.iconContainer}>
-            <MaterialIcons name="directions-bus" size={24} color="#007AFF" />
+            <MaterialIcons name="directions-bus" size={24} color="#90A17D" />
           </View>
           <View style={styles.infoContainer}>
             <View style={styles.headerRow}>
@@ -69,131 +70,202 @@ export default function JourneyPlanner() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Journey Planner</Text>
-        <Text style={styles.subtitle}>Plan your trip between two stops</Text>
-      </View>
-
-      <View style={styles.inputRow}>
-        <View style={styles.inputCard}>
-          <MaterialIcons
-            name="place"
-            size={20}
-            color="#007AFF"
-            style={styles.inputIcon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="From stop"
-            value={from}
-            onChangeText={setFrom}
-            placeholderTextColor="#999"
-            returnKeyType="next"
-          />
+      <ScrollView contentContainerStyle={{ paddingBottom: 30 }}>
+        <View style={styles.bannerContainer}>
+          <Image source={require("../assets/pune.png")} style={styles.bannerImage} />
         </View>
-        <View style={styles.inputCard}>
-          <MaterialIcons
-            name="flag"
-            size={20}
-            color="#007AFF"
-            style={styles.inputIcon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="To stop"
-            value={to}
-            onChangeText={setTo}
-            placeholderTextColor="#999"
-            returnKeyType="search"
-            onSubmitEditing={onSearch}
-          />
-        </View>
-        <TouchableOpacity style={styles.searchButton} onPress={onSearch}>
-          <Text style={styles.searchButtonText}>Search</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.inputBlock}>
+          <View style={styles.inputCard}>
+            <MaterialIcons name="place" size={20} color="#90A17D" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="From stop"
+              placeholderTextColor="#A0A0A0"
+              value={from}
+              onChangeText={setFrom}
+            />
+          </View>
 
-      {loading && (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="#007AFF" />
-        </View>
-      )}
+          <View style={styles.inputCard}>
+            <MaterialIcons name="flag" size={20} color="#90A17D" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="To stop"
+              placeholderTextColor="#A0A0A0"
+              value={to}
+              onChangeText={setTo}
+              onSubmitEditing={onSearch}
+            />
+          </View>
 
-      {error && (
-        <View style={styles.center}>
-          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.searchButton} onPress={onSearch}>
+            <MaterialIcons name="search" size={18} color="#FFFFFF" />
+            <Text style={styles.searchButtonText}>Find Best Route</Text>
+          </TouchableOpacity>
         </View>
-      )}
+        <Text style={styles.sectionHeading}>Quick Picks</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.quickScroll}
+        >
+          <TouchableOpacity
+            style={styles.quickCard}
+            onPress={() => {
+              setFrom("Katraj");
+              setTo("Shivajinagar");
+              onSearch();
+            }}
+          >
+            <Text style={styles.quickTitle}>Katraj → Shivajinagar</Text>
+            <Text style={styles.quickSubtitle}>Office route</Text>
+          </TouchableOpacity>
 
-      <FlatList
-        data={results}
-        renderItem={renderItem}
-        keyExtractor={(_, idx) => String(idx)}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={
-          !loading && (from.length > 0 || to.length > 0) ? (
+          <TouchableOpacity
+            style={styles.quickCard}
+            onPress={() => {
+              setFrom("Katraj");
+              setTo("Pune Station");
+              onSearch();
+            }}
+          >
+            <Text style={styles.quickTitle}>Katraj → Pune Station</Text>
+            <Text style={styles.quickSubtitle}>City center link</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.quickCard}
+            onPress={() => {
+              setFrom("Viman Nagar");
+              setTo("Hinjawadi");
+              onSearch();
+            }}
+          >
+            <Text style={styles.quickTitle}>Viman Nagar → Hinjawadi</Text>
+            <Text style={styles.quickSubtitle}>Tech commute</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {loading && (
+          <View style={styles.center}>
+            <ActivityIndicator size="large" color="#90A17D" />
+          </View>
+        )}
+
+        {error && (
+          <View style={styles.center}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+        <View style={styles.scrollArea}>
+          {results.length > 0 &&
+            results.map((item, idx) => (
+              <View key={idx}>{renderItem({ item, index: idx })}</View>
+            ))}
+
+          {!loading && results.length === 0 && (from || to) && (
             <View style={styles.center}>
-              <Text style={styles.emptyText}>No journeys found</Text>
+              <Text style={styles.emptyText}>No journey found</Text>
             </View>
-          ) : null
-        }
-      />
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  header: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 10 },
-  title: { fontSize: 28, fontWeight: "bold", color: "#333" },
-  subtitle: { fontSize: 16, color: "#666", marginTop: 4 },
-  inputRow: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 },
+  container: { flex: 1, backgroundColor: "#FFFFFF" },
+  bannerContainer: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    height: 150,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  bannerImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+
+  inputBlock: { marginTop: 18, paddingHorizontal: 16 },
   inputCard: {
+    backgroundColor: "#F7F8F4",
+    borderRadius: 14,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "white",
-    borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 11,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   inputIcon: { marginRight: 8 },
-  input: { flex: 1, fontSize: 16, color: "#333" },
+  input: { flex: 1, fontSize: 16, color: "#2E2E2E" },
   searchButton: {
-    backgroundColor: "#007AFF",
-    borderRadius: 10,
+    backgroundColor: "#90A17D",
+    borderRadius: 14,
     paddingVertical: 12,
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
+    gap: 8,
+    marginTop: 6,
+  },
+  searchButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  sectionHeading: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#2E2E2E",
+    marginTop: 22,
+    marginLeft: 18,
+  },
+  quickScroll: { marginTop: 10, paddingLeft: 14 },
+  quickCard: {
+    backgroundColor: "#E8EFE2",
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginRight: 12,
+    width: 180,
+  },
+  quickTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#2E2E2E",
+  },
+  quickSubtitle: {
+    fontSize: 12,
+    color: "#6D6D6D",
     marginTop: 4,
   },
-  searchButtonText: { color: "white", fontWeight: "bold", fontSize: 16 },
-  listContent: { paddingBottom: 20 },
+
+  scrollArea: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 50,
+  },
   center: { padding: 20, alignItems: "center" },
-  errorText: { color: "red", fontSize: 16 },
-  emptyText: { color: "#666", fontSize: 16 },
+  errorText: { color: "#D9534F", fontSize: 15, fontWeight: "500" },
+  emptyText: { color: "#8A8A8A", fontSize: 15 },
+
   card: {
-    backgroundColor: "white",
-    padding: 16,
-    marginHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 14,
     marginBottom: 12,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
   },
   row: { flexDirection: "row", alignItems: "center" },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#E3F2FD",
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#F1F5EE",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 16,
@@ -202,14 +274,14 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     marginBottom: 4,
+    alignItems: "center",
   },
-  routeNumber: { fontSize: 18, fontWeight: "bold", color: "#333" },
+  routeNumber: { fontSize: 18, fontWeight: "bold", color: "#2E2E2E" },
   headsign: {
     fontSize: 12,
     color: "#666",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#F2F2F2",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
