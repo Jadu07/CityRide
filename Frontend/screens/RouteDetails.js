@@ -11,7 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { getRouteDetails } from "../services/api";
 import { diffMinutesHHMMSS, calculateNextBusTime } from "../utils/timeUtils";
-import { getRouteMeta } from "../data/routesMeta";
+
 
 export default function RouteDetails({ route, navigation }) {
   const { tripId, route: routeInfo } = route.params;
@@ -34,11 +34,10 @@ export default function RouteDetails({ route, navigation }) {
     }
   };
 
-  const meta = getRouteMeta(routeInfo.route_number);
 
   const renderStop = ({ item, index }) => {
     const next = details?.stops?.[index + 1];
-    const leg = next ? diffMinutesHHMMSS(item.time, next.time) : null;
+    const time = next ? diffMinutesHHMMSS(item.time, next.time) : null;
     return (
       <View style={styles.stopItem}>
         <View style={styles.timelineContainer}>
@@ -48,8 +47,8 @@ export default function RouteDetails({ route, navigation }) {
         <View style={styles.stopContent}>
           <Text style={styles.stopName}>{item.stop_name}</Text>
           <Text style={styles.stopTime}>{item.time}</Text>
-          {typeof leg === "number" && !Number.isNaN(leg) && (
-            <Text style={styles.legText}>≈ {leg} mins to next stop</Text>
+          {typeof time === "number" && !Number.isNaN(time) && (
+            <Text style={styles.timeText}>{time} mins to next stop</Text>
           )}
         </View>
       </View>
@@ -73,21 +72,6 @@ export default function RouteDetails({ route, navigation }) {
         </View>
       </View>
 
-      {/* META INFO */}
-      <View style={styles.metaRow}>
-        {meta ? (
-          <Text style={styles.metaText}>
-            {calculateNextBusTime(
-              meta.firstBus,
-              meta.lastBus,
-              meta.frequencyMins
-            )}{" "}
-            · Every {meta.frequencyMins} mins
-          </Text>
-        ) : (
-          <Text style={styles.metaText}>Schedule info unavailable</Text>
-        )}
-      </View>
 
       {loading ? (
         <View style={styles.center}>
@@ -205,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
   },
-  legText: {
+  timeText: {
     fontSize: 12,
     color: "#999",
     marginTop: 4,
