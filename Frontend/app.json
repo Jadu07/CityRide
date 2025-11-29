@@ -24,6 +24,9 @@
     },
     "web": {
       "favicon": "./favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-video"
+    ]
   }
 }
