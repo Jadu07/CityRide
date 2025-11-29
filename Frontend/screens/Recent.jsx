@@ -35,7 +35,7 @@ export default function Recent({ navigation }) {
       style={styles.card}
       activeOpacity={0.85}
       onPress={() =>
-        navigation.navigate("RouteDetails", { route_number: item.route_number })
+        navigation.navigate("RouteDetails", { route_number: item.route_number, trip_headsign: item.trip_headsign, tripId: item.tripId })
       }
     >
       <View style={styles.cardLeft}>

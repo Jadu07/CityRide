@@ -21,14 +21,16 @@ export default function RouteDetails({ route, navigation }) {
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const [fromStop, setFromStop] = useState(null);
   const [toStop, setToStop] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectType, setSelectType] = useState(null); 
+  const [selectType, setSelectType] = useState(null);
 
   useEffect(() => {
-    addToRecent({ route_number, trip_headsign });
+    addToRecent({ route_number, trip_headsign, tripId });
+    checkFavoriteStatus();
     fetchDetails();
   }, [tripId]);
 
@@ -54,11 +56,34 @@ export default function RouteDetails({ route, navigation }) {
     await AsyncStorage.setItem("recent", JSON.stringify(list));
   };
 
-  const addToFavorites = async (routeObj) => {
-    let list = JSON.parse(await AsyncStorage.getItem("favorites")) || [];
-    if (!list.some((i) => i.route_number === routeObj.route_number)) {
-      list.push(routeObj);
+  const checkFavoriteStatus = async () => {
+    try {
+      const list = JSON.parse(await AsyncStorage.getItem("favorites")) || [];
+      const exists = list.some((i) => i.route_number === route_number);
+      setIsFavorite(exists);
+    } catch (e) {
+      console.log("Error checking favorites", e);
+    }
+  };
+
+  const toggleFavorite = async () => {
+    try {
+      let list = JSON.parse(await AsyncStorage.getItem("favorites")) || [];
+      if (isFavorite) {
+        // Remove
+        list = list.filter((i) => i.route_number !== route_number);
+        setIsFavorite(false);
+      } else {
+        // Add
+        const routeObj = { route_number, trip_headsign, tripId };
+        if (!list.some((i) => i.route_number === routeObj.route_number)) {
+          list.push(routeObj);
+        }
+        setIsFavorite(true);
+      }
       await AsyncStorage.setItem("favorites", JSON.stringify(list));
+    } catch (e) {
+      console.log("Error toggling favorite", e);
     }
   };
 
@@ -119,10 +144,14 @@ export default function RouteDetails({ route, navigation }) {
         </View>
 
         <TouchableOpacity
-          onPress={() => addToFavorites({ route_number, trip_headsign })}
+          onPress={toggleFavorite}
           style={styles.favoriteButton}
         >
-          <MaterialIcons name="favorite" size={26} color="#d9534f" />
+          <MaterialIcons
+            name={isFavorite ? "favorite" : "favorite-border"}
+            size={26}
+            color={isFavorite ? "#d9534f" : "#333"}
+          />
         </TouchableOpacity>
       </View>
 

@@ -33,10 +33,9 @@ export default function Favorites({ navigation }) {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      key={item.route_number}
       style={styles.card}
       activeOpacity={0.85}
-      onPress={() => navigation.navigate("RouteDetails", { route_number: item.route_number })}
+      onPress={() => navigation.navigate("RouteDetails", { route_number: item.route_number, trip_headsign: item.trip_headsign, tripId: item.tripId })}
     >
       <View style={styles.cardLeft}>
         <View style={styles.iconCircle}>
@@ -76,7 +75,7 @@ export default function Favorites({ navigation }) {
         ) : (
           <FlatList
             data={favorites}
-            keyExtractor={(item) => item.route_number}
+            keyExtractor={(item) => String(item.route_number)}
             renderItem={renderItem}
             contentContainerStyle={{ paddingBottom: 24 }}
             showsVerticalScrollIndicator={false}
