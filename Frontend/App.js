@@ -72,5 +72,6 @@ export default function App() {
         <Stack.Screen name="RouteDetails" component={RouteDetails} />
       </Stack.Navigator>
     </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
