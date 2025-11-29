@@ -37,3 +37,16 @@ export function calculateNextBusTime(firstBus, lastBus, freqMins) {
   if (nextBus > last) return "No more buses today";
   return `Next bus at ${pad(nextBus.getHours())}:${pad(nextBus.getMinutes())}`;
 }
+
+export function parseHHMMSSToMinutes(hhmmss) {
+  if (!hhmmss || typeof hhmmss !== 'string') return NaN;
+  const [h = 0, m = 0, s = 0] = hhmmss.split(':').map(Number);
+  return h * 60 + m + Math.floor(s / 60);
+}
+
+export function diffMinutesHHMMSS(start, end) {
+  const s = parseHHMMSSToMinutes(start);
+  const e = parseHHMMSSToMinutes(end);
+  if (Number.isNaN(s) || Number.isNaN(e)) return NaN;
+  return e - s;
+}

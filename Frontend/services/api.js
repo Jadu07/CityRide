@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = "https://city-ride-ashen.vercel.app/";
 
 
 
@@ -17,3 +17,4 @@ const apiCall = async (endpoint) => {
 
 export const searchRoutes = (q) => apiCall(`/routes/search?q=${encodeURIComponent(q)}`);
 export const getRouteDetails = (tripId) => apiCall(`/route/details?trip_id=${encodeURIComponent(tripId)}`);
+export const getJourney = (from, to) => apiCall(`/journey?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`);
