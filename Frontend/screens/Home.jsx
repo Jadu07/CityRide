@@ -50,7 +50,8 @@ export default function Home({ navigation }) {
       onPress={() =>
         navigation.navigate("RouteDetails", {
           tripId: item.example_trip_id,
-          route: item,
+          route_number: item.route_number,
+          trip_headsign: item.destination || item.trip_headsign,
         })
       }
     />
@@ -58,7 +59,7 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>CityRide</Text>
